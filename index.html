@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Search for Ecommerce App</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">   
+</head>
+<body>
+
+    <div id="app">
+        <h1>Enhanced Search for Ecommerce App</h1>
+
+        <!-- Search Bar -->
+        <div>
+            <input type="text" id="searchInput" placeholder="Enter your query...">
+            <button onclick="search()">Search</button>
+            <button onclick="clearResults()">Clear</button>
+        </div>
+
+        <!-- Loading Indicators -->
+        <div id="loading" style="display: none;">
+            Loading...
+        </div>
+
+        <!-- Result Display Section -->
+        <div id="results" style="display: none;">
+            <h2>Search Results</h2>
+            <div id="pagination" style="display: none;">
+                <button onclick="previousPage()">Previous</button>
+                <span id="currentPage">1</span>
+                <button onclick="nextPage()">Next</button>
+            </div>
+            <ul id="itemList"></ul>
+        </div>
+
+        <!-- Error Messages -->
+        <div id="error" style="display: none; color: red;"></div>
+    </div>
+
+    <script>
+        let currentPage = 1; // Current page for pagination
+        const itemsPerPage = 5; // Number of items to display per page
+
+        // Frontend Logic
+        function search() {
+            const query = document.getElementById('searchInput').value;
+
+            // Display loading indicators
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+
+            // Simulate API request (replace with actual API call)
+            setTimeout(() => {
+                const response = {
+                    success: true,
+                    items: [
+                        { name: 'Item 1', link: 'https://example.com/item1' },
+                        { name: 'Item 2', link: 'https://example.com/item2' },
+                        // Add more items as needed
+                    ]
+                };
+
+                if (response.success) {
+                    displayResults(response.items);
+                } else {
+                    displayError('Error processing the request.');
+                }
+            }, 2000); // Simulating a delay - replace with actual API response time
+        }
+
+        function displayResults(items) {
+            // Hide loading indicators
+            document.getElementById('loading').style.display = 'none';
+
+            // Display results
+            const itemList = document.getElementById('itemList');
+            itemList.innerHTML = '';
+
+            // Pagination
+            const startIdx = (currentPage - 1) * itemsPerPage;
+            const endIdx = startIdx + itemsPerPage;
+            const paginatedItems = items.slice(startIdx, endIdx);
+
+            paginatedItems.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<a href="${item.link}" target="_blank">${item.name}</a>`;
+                itemList.appendChild(listItem);
+            });
+
+            // Update pagination
+            const totalPages = Math.ceil(items.length / itemsPerPage);
+            document.getElementById('currentPage').innerText = currentPage;
+            document.getElementById('pagination').style.display = totalPages > 1 ? 'block' : 'none';
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function displayError(message) {
+            // Hide loading indicators
+            document.getElementById('loading').style.display = 'none';
+
+            // Display error message
+            document.getElementById('error').innerText = message;
+            document.getElementById('error').style.display = 'block';
+        }
+
+        function clearResults() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+            document.getElementById('itemList').innerHTML = '';
+        }
+
+        function nextPage() {
+            currentPage++;
+            search();
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                search();
+            }
+        }
+    </script>
+
+</body>
+</html>
